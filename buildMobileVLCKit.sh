@@ -62,7 +62,7 @@ buildxcodeproj()
     info "Building $1 ($target, ${CONFIGURATION}, $PLATFORM)"
 
     local architectures=""
-    if [ "$PLATFORM" = "iphonesimulator" ]; then
+    if [ "$PLATFORM" = "iphonesimulator" -o "$PLATFORM" = "appletvsimulator" ]; then
         architectures="i386 x86_64"
     else
         architectures="armv7 armv7s arm64"
@@ -431,18 +431,28 @@ info "all done"
 if [ "$BUILD_STATIC_FRAMEWORK" != "no" ]; then
     info "Building static MobileVLCKit.framework"
 
-    buildxcodeproj MobileVLCKit "MobileVLCKit" iphoneos
-    buildxcodeproj MobileVLCKit "MobileVLCKit" iphonesimulator
+    if [ "$TVOS" != "yes" ]; then
+      platform=iphone
+      lib=Mobile
+      include=include/${lib}VLCKit
+    else
+      platform=appletv
+      lib=TV
+      include=${lib}VLCKit
+    fi
+
+    buildxcodeproj MobileVLCKit "${lib}VLCKit" ${platform}os
+    buildxcodeproj MobileVLCKit "${lib}VLCKit" ${platform}simulator
 
     # Assumes both platforms were built currently
     spushd build
     rm -rf MobileVLCKit.framework && \
     mkdir MobileVLCKit.framework && \
-    lipo -create Release-iphoneos/libMobileVLCKit.a \
-                 Release-iphonesimulator/libMobileVLCKit.a \
+    lipo -create Release-${platform}os/lib${lib}VLCKit.a \
+                 Release-${platform}simulator/lib${lib}VLCKit.a \
               -o MobileVLCKit.framework/MobileVLCKit && \
     chmod a+x MobileVLCKit.framework/MobileVLCKit && \
-    cp -pr Release-iphoneos/include/MobileVLCKit MobileVLCKit.framework/Headers
+    cp -pr Release-${platform}os/$include MobileVLCKit.framework/Headers
     spopd # build
 
     info "Build of static MobileVLCKit.framework completed"
