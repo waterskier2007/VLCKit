@@ -429,8 +429,6 @@ fi
 info "all done"
 
 if [ "$BUILD_STATIC_FRAMEWORK" != "no" ]; then
-    info "Building static MobileVLCKit.framework"
-
     if [ "$TVOS" != "yes" ]; then
       platform=iphone
       lib=Mobile
@@ -441,19 +439,21 @@ if [ "$BUILD_STATIC_FRAMEWORK" != "no" ]; then
       include=${lib}VLCKit
     fi
 
+    info "Building static ${lib}VLCKit.framework"
+
     buildxcodeproj MobileVLCKit "${lib}VLCKit" ${platform}os
     buildxcodeproj MobileVLCKit "${lib}VLCKit" ${platform}simulator
 
     # Assumes both platforms were built currently
     spushd build
-    rm -rf MobileVLCKit.framework && \
-    mkdir MobileVLCKit.framework && \
+    rm -rf ${lib}VLCKit.framework && \
+    mkdir ${lib}VLCKit.framework && \
     lipo -create Release-${platform}os/lib${lib}VLCKit.a \
                  Release-${platform}simulator/lib${lib}VLCKit.a \
-              -o MobileVLCKit.framework/MobileVLCKit && \
-    chmod a+x MobileVLCKit.framework/MobileVLCKit && \
-    cp -pr Release-${platform}os/$include MobileVLCKit.framework/Headers
+              -o ${lib}VLCKit.framework/${lib}VLCKit && \
+    chmod a+x ${lib}VLCKit.framework/${lib}VLCKit && \
+    cp -pr Release-${platform}os/$include ${lib}VLCKit.framework/Headers
     spopd # build
 
-    info "Build of static MobileVLCKit.framework completed"
+    info "Build of static ${lib}VLCKit.framework completed"
 fi
