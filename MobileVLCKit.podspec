@@ -7,12 +7,12 @@ Pod::Spec.new do |s|
     :type => 'LGPL v2.1', :file => 'MobileVLCKit-binary/COPYING.txt'
   }
   s.documentation_url = 'https://wiki.videolan.org/VLCKit/'
-  s.platform  = :ios
+  s.platform  = :tvos
   s.authors   = 'Pierre d\'Herbemont', { 'Felix Paul Kühne' => 'fkuehne@videolan.org' }
   s.source    = {
     :http => 'http://download.videolan.org/pub/cocoapods/MobileVLCKit-2.2.2.zip'
   }
-  s.ios.vendored_framework = 'MobileVLCKit-binary/MobileVLCKit.framework'
+  s.tvos.vendored_framework = 'MobileVLCKit-binary/MobileVLCKit.framework'
   s.public_header_files = 'MobileVLCKit-binary/MobileVLCKit.framework/Headers/*.h'
   s.ios.deployment_target = '7.0.0'
   s.tvos.deployment_target = '9.0'
